@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-const URL1 = 'https://free-chat-two.vercel.app'
+const URL1 = 'https://free-chat-henna.vercel.app:3000'
 const URL2 = 'http://localhost:3000'
 export const LongPulling = () => {
   const [messages, setMessages] = useState([]);
@@ -13,7 +13,7 @@ export const LongPulling = () => {
   const subscribe = async () => {
     try {
       const { data } = await axios.get(
-        `${URL2}/get-message`,
+        `${URL1}/get-message`,
       );
       await setMessages((prev) => [data, ...prev]);
       await setValue("");
@@ -27,14 +27,14 @@ export const LongPulling = () => {
   };
 
   const sendMessage = async (value) => {
-    await axios.post(`${URL2}/post-message`, {
+    await axios.post(`${URL1}/post-message`, {
       message: value,
       id: Date.now(),
     });
   };
 
   const test = async () => {
-    await axios.post(`${URL2}/test`, {
+    await axios.post(`${URL1}/test`, {
       message: 'value',
       id: Date.now(),
     });
