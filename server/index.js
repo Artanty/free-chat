@@ -27,4 +27,8 @@ app.post("/test", (req, res) => {
   return res.json({ status: 'ok' })
 });
 
+app.get("/test", (req, res) => {
+  return res.json({ status: 'ok' })
+});
+
 app.listen(PORT, () => console.log(`server started on port ${PORT}`));
