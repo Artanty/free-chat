@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
-const URL1 = 'https://free-chat-henna.vercel.app:3000'
+const URL1 = 'https://free-chat-henna.vercel.app'
 const URL2 = 'http://localhost:3000'
 export const LongPulling = () => {
   const [messages, setMessages] = useState([]);

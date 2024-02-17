@@ -1,34 +1,46 @@
-const express = require("express");
-const cors = require("cors");
-const events = require("events");
+const http = require('http');
 
-const PORT = 3000;
+// Sample data
+let latestData = { value: 0 };
 
-const emitter = new events.EventEmitter();
+// Function to simulate updates to the data
+function updateData() {
+    latestData.value++;
+}
 
-const app = express();
+// Create HTTP server
+const server = http.createServer((req, res) => {
+    // Set CORS headers to allow requests from any origin
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET');
 
-app.use(cors());
-app.use(express.json());
-
-app.get("/get-message", (req, res) => {
-  emitter.once("newMessage", (message) => {
-    return res.json(message);
-  });
+    // Handle client requests
+    if (req.url === '/poll') {
+        // Set a timeout to simulate updates
+        setTimeout(() => {
+            // Check if data has been updated
+            if (latestData.value > 0) {
+                // Send the updated data to the client
+                res.writeHead(200, { 'Content-Type': 'application/json' });
+                res.end(JSON.stringify(latestData));
+            } else {
+                // If no update, long-poll by sending a 204 status (no content) to keep the connection open
+                res.writeHead(204);
+                res.end();
+            }
+        }, 5000); // Polling interval of 5 seconds (adjust as needed)
+    } else {
+        // Handle other requests
+        res.writeHead(404);
+        res.end();
+    }
 });
 
-app.post("/post-message", (req, res) => {
-  const message = req.body;
-  emitter.emit("newMessage", message);
-  res.json({ status: 'get message triggered' }).status(200).end();
+// Start the server
+const PORT = process.env.PORT || 3000;
+server.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
-app.post("/test", (req, res) => {
-  return res.json({ status: 'ok' })
-});
-
-app.get("/test", (req, res) => {
-  return res.json({ status: 'ok' })
-});
-
-app.listen(PORT, () => console.log(`server started on port ${PORT}`));
+// Function to simulate data updates periodically
+setInterval(updateData, 10000); // Update data every 10 seconds (adjust as needed)
